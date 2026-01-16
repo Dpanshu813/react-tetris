@@ -37,9 +37,13 @@ stages:
     - script: npm run build
       displayName: 'Build React app'
 
+    # Debug step: list files to confirm build folder exists
+    - script: ls -al $(Build.SourcesDirectory)
+      displayName: 'List repo root after build'
+
     - task: ArchiveFiles@2
       inputs:
-        rootFolderOrFile: '$(build_dir)'
+        rootFolderOrFile: '$(Build.SourcesDirectory)/$(build_dir)'
         includeRootFolder: false
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/react-build.zip'
@@ -61,7 +65,7 @@ stages:
   condition: succeeded()
   jobs:
   - deployment: DeployDev
-    environment: dp_dev
+    environment: dp_dev   # <-- match your actual environment name
     strategy:
       runOnce:
         deploy:
@@ -72,7 +76,7 @@ stages:
           - task: AzureWebApp@1
             displayName: 'Deploy to DEV'
             inputs:
-              azureSubscription: Azure-Tetris
+              azureSubscription: Azure-Tetris   # <-- use the exact service connection name
               appType: webAppLinux
               appName: $(webAppNameDev)
               package: '$(Pipeline.Workspace)/$(artifact_name)/react-build.zip'
@@ -86,7 +90,7 @@ stages:
   condition: succeeded()
   jobs:
   - deployment: DeployProd
-    environment: dp_prod
+    environment: dp_prod   # <-- match your actual environment name
     strategy:
       runOnce:
         deploy:
@@ -97,7 +101,7 @@ stages:
           - task: AzureWebApp@1
             displayName: 'Deploy to PROD'
             inputs:
-              azureSubscription: Azure-Tetris
+              azureSubscription: Azure-Tetris   # <-- use the exact service connection name
               appType: webAppLinux
               appName: $(webAppNameProd)
               package: '$(Pipeline.Workspace)/$(artifact_name)/react-build.zip'
