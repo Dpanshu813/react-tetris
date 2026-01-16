@@ -16,8 +16,9 @@ steps:
     versionSpec: '$(node_version)'
   displayName: 'Install Node.js'
 
-- script: npm ci
-  displayName: 'Install dependencies (clean)'
+- task: Npm@1
+  inputs:
+    command: 'install'
   # npm ci is faster and reproducible for CI
 
 - script: npm run build
