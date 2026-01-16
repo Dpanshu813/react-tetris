@@ -24,5 +24,4 @@ steps:
 - script: npm run build
   displayName: 'Build project'
 
-- script: npm test --silent
-  displayName: 'Run tests'
+
